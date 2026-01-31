@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-01-31T01:19:30.959Z",
+  "window_id": "01:15",
+  "seconds_until_next": 629,
+  "market_slug": "btc-updown-15m-1769822100",
+  "market_question": "Bitcoin Up or Down - January 30, 8:15PM-8:30PM ET",
+  "tokens": {
+    "up": "37559968304324131568153867993649586403693239476130749965814473269630059584383",
+    "down": "32126343534658318065499342733017135845153297052529885117583224431618192078899"
+  },
+  "order": "START",
+  "ready_for_next": false,
+  "risk_caps": {
+    "max_shares": 100,
+    "max_notional_usd": 50,
+    "stop_loss_usd": 10
+  }
+}

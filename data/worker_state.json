@@ -1,0 +1,21 @@
+{
+  "positions": {
+    "yes": {
+      "shares": 10,
+      "avgPrice": 0.5,
+      "cost": 5
+    },
+    "no": {
+      "shares": 0,
+      "avgPrice": 0.5,
+      "cost": 0
+    }
+  },
+  "pendingOrders": [],
+  "prices": {
+    "yes": 0.5,
+    "no": 0.5
+  },
+  "balance": 995,
+  "lastUpdate": "2026-01-31T01:19:31.000Z"
+}

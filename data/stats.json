@@ -1,0 +1,17 @@
+{
+    "session": {
+        "wins": 0,
+        "locks": 0,
+        "losses": 0,
+        "pnl": 0,
+        "entered": 0
+    },
+    "allTime": {
+        "wins": 0,
+        "locks": 0,
+        "losses": 0,
+        "pnl": 0,
+        "entered": 0
+    },
+    "wallet": 1000
+}
