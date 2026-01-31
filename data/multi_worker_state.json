@@ -1,0 +1,63 @@
+{
+  "positions": {
+    "byAsset": {
+      "BTC": {
+        "yes": {
+          "size": 0,
+          "avgPrice": 0.5,
+          "cost": 0
+        },
+        "no": {
+          "size": 0,
+          "avgPrice": 0.5,
+          "cost": 0
+        }
+      },
+      "SOL": {
+        "yes": {
+          "size": 10,
+          "avgPrice": 0.54,
+          "cost": 5.4
+        },
+        "no": {
+          "size": 0,
+          "avgPrice": 0.5,
+          "cost": 0
+        }
+      },
+      "XRP": {
+        "yes": {
+          "size": 10,
+          "avgPrice": 0.52,
+          "cost": 5.2
+        },
+        "no": {
+          "size": 0,
+          "avgPrice": 0.5,
+          "cost": 0
+        }
+      }
+    },
+    "total": {
+      "shares": 80,
+      "cost": 28.599999999999998,
+      "avgPrice": 0.3575
+    }
+  },
+  "pendingOrders": 45,
+  "balance": 971.4,
+  "assets": [
+    "BTC",
+    "SOL",
+    "XRP"
+  ],
+  "window": {
+    "id": 1769826600,
+    "start": "2026-01-31T02:30:00.000Z",
+    "end": "2026-01-31T02:45:00.000Z",
+    "elapsed_sec": 697,
+    "remaining_sec": 202,
+    "progress": 0.7754377777777778
+  },
+  "lastUpdate": "2026-01-31T02:41:38.095Z"
+}

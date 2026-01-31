@@ -7,7 +7,12 @@
     "start": "node src/index.js",
     "foreman": "node src/foreman/index.js",
     "worker": "node src/trader/worker.js",
-    "dashboard": "node src/dashboard/index.js"
+    "dashboard": "node src/dashboard/index.js",
+    "multi-foreman": "node src/foreman/multi_foreman.js",
+    "multi-worker": "node src/trader/multi_worker.js",
+    "advanced-worker": "node src/trader/advanced_worker.js",
+    "advanced-dashboard": "node src/dashboard/advanced_dashboard.js",
+    "check-markets": "node src/tools/check_markets.js"
   },
   "dependencies": {
     "ethers": "^6.11.1",

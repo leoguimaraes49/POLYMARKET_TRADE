@@ -1,0 +1,99 @@
+{
+  "assets": {
+    "BTC": {
+      "state": "ARMED",
+      "position": {
+        "yesShares": 0,
+        "yesCost": 0,
+        "noShares": 0,
+        "noCost": 0
+      },
+      "leader": "NO",
+      "flips": 0,
+      "obi": -0.17315079279846982,
+      "locked": false,
+      "lockDetails": {
+        "locked": false,
+        "lockTimestamp": null,
+        "lockDetails": null
+      }
+    },
+    "SOL": {
+      "state": "LOCKING",
+      "position": {
+        "yesShares": 0,
+        "yesCost": 0,
+        "noShares": 0,
+        "noCost": 0
+      },
+      "leader": "NO",
+      "flips": 0,
+      "obi": 0.09432368922084212,
+      "locked": false,
+      "lockDetails": {
+        "locked": false,
+        "lockTimestamp": null,
+        "lockDetails": null
+      }
+    },
+    "XRP": {
+      "state": "ARMED",
+      "position": {
+        "yesShares": 0,
+        "yesCost": 0,
+        "noShares": 0,
+        "noCost": 0
+      },
+      "leader": "NO",
+      "flips": 0,
+      "obi": -0.04215693391568829,
+      "locked": false,
+      "lockDetails": {
+        "locked": false,
+        "lockTimestamp": null,
+        "lockDetails": null
+      }
+    }
+  },
+  "totals": {
+    "yesShares": 0,
+    "noShares": 0,
+    "yesCost": 0,
+    "noCost": 0,
+    "totalCost": 0,
+    "pnlIfYesWins": 0,
+    "pnlIfNoWins": 0
+  },
+  "balance": 100,
+  "pendingOrders": 5,
+  "window": {
+    "id": 1769834700,
+    "start": "2026-01-31T04:45:00.000Z",
+    "end": "2026-01-31T05:00:00.000Z",
+    "elapsed_sec": 764,
+    "remaining_sec": 135,
+    "progress": 0.8488888888888889
+  },
+  "stats": {
+    "session": {
+      "wins": 0,
+      "losses": 0,
+      "breakeven": 0,
+      "totalPnl": 0,
+      "tradesEntered": 0,
+      "startTime": "2026-01-31T04:54:58.318Z",
+      "winRate": "N/A",
+      "totalTrades": 0
+    },
+    "allTime": {
+      "wins": 0,
+      "losses": 0,
+      "breakeven": 0,
+      "totalPnl": 0,
+      "tradesEntered": 0,
+      "totalTrades": 0
+    },
+    "recentTrades": []
+  },
+  "lastUpdate": "2026-01-31T04:57:48.557Z"
+}

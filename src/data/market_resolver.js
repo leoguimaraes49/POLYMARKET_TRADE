@@ -6,6 +6,15 @@ const marketCache = {
     fetchedAtMs: 0
 };
 
+const WINDOW_TOLERANCE_MS = 90_000;
+
+function getWindowBoundsMs(now = Date.now()) {
+    const windowMs = 15 * 60 * 1000;
+    const startMs = Math.floor(now / windowMs) * windowMs;
+    const endMs = startMs + windowMs;
+    return { startMs, endMs };
+}
+
 export async function resolveCurrentBtc15mMarket() {
     // 1. If explicit slug provided, use it
     if (CONFIG.polymarket.marketSlug) {
@@ -32,11 +41,20 @@ export async function resolveCurrentBtc15mMarket() {
 
         const picked = pickLatestLiveMarket(markets);
 
-        if (picked) {
-            marketCache.market = picked;
+        const { endMs } = getWindowBoundsMs();
+        const matched = markets.find((m) => {
+            const mEnd = m?.endDate ? new Date(m.endDate).getTime() : null;
+            if (!mEnd) return false;
+            return Math.abs(mEnd - endMs) <= WINDOW_TOLERANCE_MS;
+        });
+
+        const choice = matched || picked;
+
+        if (choice) {
+            marketCache.market = choice;
             marketCache.fetchedAtMs = now;
         }
-        return picked;
+        return choice;
     } catch (err) {
         console.error("Error resolving market:", err);
         return null;

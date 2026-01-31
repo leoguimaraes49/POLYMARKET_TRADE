@@ -141,7 +141,22 @@ export function filterBtcUpDown15mMarkets(markets, { seriesSlug, slugPrefix } = 
   });
 }
 
-export async function fetchClobPrice({ tokenId, side }) {
+export async function fetchClobPrice(tokenIdOrOptions, sideArg = 'BUY') {
+  // Support both fetchClobPrice(tokenId) and fetchClobPrice({tokenId, side})
+  let tokenId, side;
+
+  if (typeof tokenIdOrOptions === 'object' && tokenIdOrOptions !== null) {
+    tokenId = tokenIdOrOptions.tokenId;
+    side = tokenIdOrOptions.side || 'BUY';
+  } else {
+    tokenId = tokenIdOrOptions;
+    side = sideArg;
+  }
+
+  if (!tokenId) {
+    throw new Error('tokenId is required');
+  }
+
   const url = new URL("/price", CONFIG.clobBaseUrl);
   url.searchParams.set("token_id", tokenId);
   url.searchParams.set("side", side);
@@ -151,7 +166,7 @@ export async function fetchClobPrice({ tokenId, side }) {
     throw new Error(`CLOB price error: ${res.status} ${await res.text()}`);
   }
   const data = await res.json();
-  return toNumber(data.price);
+  return { price: toNumber(data.price), side };
 }
 
 export async function fetchOrderBook({ tokenId }) {
@@ -171,20 +186,20 @@ export function summarizeOrderBook(book, depthLevels = 5) {
 
   const bestBid = bids.length
     ? bids.reduce((best, lvl) => {
-        const p = toNumber(lvl.price);
-        if (p === null) return best;
-        if (best === null) return p;
-        return Math.max(best, p);
-      }, null)
+      const p = toNumber(lvl.price);
+      if (p === null) return best;
+      if (best === null) return p;
+      return Math.max(best, p);
+    }, null)
     : null;
 
   const bestAsk = asks.length
     ? asks.reduce((best, lvl) => {
-        const p = toNumber(lvl.price);
-        if (p === null) return best;
-        if (best === null) return p;
-        return Math.min(best, p);
-      }, null)
+      const p = toNumber(lvl.price);
+      if (p === null) return best;
+      if (best === null) return p;
+      return Math.min(best, p);
+    }, null)
     : null;
   const spread = bestBid !== null && bestAsk !== null ? bestAsk - bestBid : null;
 

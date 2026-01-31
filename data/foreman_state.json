@@ -1,0 +1,101 @@
+{
+  "lastUpdate": "2026-01-31T04:57:44.669Z",
+  "wind": {
+    "wind": -1,
+    "description": "FORTE BAIXA",
+    "directions": {
+      "BTC": -1,
+      "SOL": -1,
+      "XRP": -1
+    }
+  },
+  "regimes": {
+    "regimes": {
+      "BTC": {
+        "regime": "STEADY",
+        "stats": {
+          "avg": 0.52,
+          "std": 0.028867513459481273,
+          "trend": -0.01333333333333342
+        },
+        "updatedAt": 1769835464529
+      },
+      "SOL": {
+        "regime": "STEADY",
+        "stats": {
+          "avg": 0.2283333333333334,
+          "std": 0.010671873729054749,
+          "trend": -0.016666666666666663
+        },
+        "updatedAt": 1769835464529
+      },
+      "XRP": {
+        "regime": "STEADY",
+        "stats": {
+          "avg": 0.5583333333333332,
+          "std": 0.017716909687891056,
+          "trend": 0.01000000000000012
+        },
+        "updatedAt": 1769835464529
+      }
+    },
+    "historyLengths": {
+      "BTC": 12,
+      "SOL": 12,
+      "XRP": 12
+    }
+  },
+  "scores": {
+    "BTC": {
+      "asset": "BTC",
+      "score": 0.53,
+      "order": "HOLD",
+      "components": {
+        "microT": 0.35,
+        "mesoT": 0.2,
+        "macroT": 0.51,
+        "stability": 1
+      },
+      "directions": {
+        "micro": -1,
+        "meso": -1,
+        "macro": -1
+      },
+      "divergence": false
+    },
+    "SOL": {
+      "asset": "SOL",
+      "score": 0.22,
+      "order": "STOP",
+      "components": {
+        "microT": 0.21,
+        "mesoT": 0.12,
+        "macroT": 0.4,
+        "stability": 1
+      },
+      "directions": {
+        "micro": -1,
+        "meso": 1,
+        "macro": -1
+      },
+      "divergence": true
+    },
+    "XRP": {
+      "asset": "XRP",
+      "score": 0.58,
+      "order": "START",
+      "components": {
+        "microT": 0.49,
+        "mesoT": 0.16,
+        "macroT": 0.54,
+        "stability": 1
+      },
+      "directions": {
+        "micro": -1,
+        "meso": -1,
+        "macro": -1
+      },
+      "divergence": false
+    }
+  }
+}
