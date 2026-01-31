@@ -1,5 +1,5 @@
 {
-  "lastUpdate": "2026-01-31T04:57:44.669Z",
+  "lastUpdate": "2026-01-31T05:14:34.026Z",
   "wind": {
     "wind": -1,
     "description": "FORTE BAIXA",
@@ -12,49 +12,49 @@
   "regimes": {
     "regimes": {
       "BTC": {
-        "regime": "STEADY",
+        "regime": "FADING",
         "stats": {
-          "avg": 0.52,
-          "std": 0.028867513459481273,
-          "trend": -0.01333333333333342
+          "avg": 0.3566666666666667,
+          "std": 0.04714045207910319,
+          "trend": -0.050000000000000044
         },
-        "updatedAt": 1769835464529
+        "updatedAt": 1769836473921
       },
       "SOL": {
         "regime": "STEADY",
         "stats": {
-          "avg": 0.2283333333333334,
-          "std": 0.010671873729054749,
-          "trend": -0.016666666666666663
+          "avg": 0.18666666666666668,
+          "std": 0.009428090415820642,
+          "trend": 0.010000000000000009
         },
-        "updatedAt": 1769835464529
+        "updatedAt": 1769836473921
       },
       "XRP": {
         "regime": "STEADY",
         "stats": {
-          "avg": 0.5583333333333332,
-          "std": 0.017716909687891056,
-          "trend": 0.01000000000000012
+          "avg": 0.51,
+          "std": 0,
+          "trend": 0
         },
-        "updatedAt": 1769835464529
+        "updatedAt": 1769836473922
       }
     },
     "historyLengths": {
-      "BTC": 12,
-      "SOL": 12,
-      "XRP": 12
+      "BTC": 3,
+      "SOL": 3,
+      "XRP": 3
     }
   },
   "scores": {
     "BTC": {
       "asset": "BTC",
-      "score": 0.53,
-      "order": "HOLD",
+      "score": 0.29,
+      "order": "STOP",
       "components": {
-        "microT": 0.35,
-        "mesoT": 0.2,
+        "microT": 0.07,
+        "mesoT": 0.11,
         "macroT": 0.51,
-        "stability": 1
+        "stability": 0.62
       },
       "directions": {
         "micro": -1,
@@ -65,13 +65,13 @@
     },
     "SOL": {
       "asset": "SOL",
-      "score": 0.22,
+      "score": 0.2,
       "order": "STOP",
       "components": {
-        "microT": 0.21,
-        "mesoT": 0.12,
-        "macroT": 0.4,
-        "stability": 1
+        "microT": 0.14,
+        "mesoT": 0.04,
+        "macroT": 0.41,
+        "stability": 0.96
       },
       "directions": {
         "micro": -1,
@@ -82,11 +82,11 @@
     },
     "XRP": {
       "asset": "XRP",
-      "score": 0.58,
-      "order": "START",
+      "score": 0.51,
+      "order": "HOLD",
       "components": {
-        "microT": 0.49,
-        "mesoT": 0.16,
+        "microT": 0.3,
+        "mesoT": 0.2,
         "macroT": 0.54,
         "stability": 1
       },

@@ -14,7 +14,8 @@ const CONFIG = {
     FLIP_RECOVERY_COUNT: 3,     // Recovery mode if 3+ flips with shares
     MIN_STABILITY: 0.6,         // Minimum stability for lock attempts
     MIN_SPREAD: 0.00,           // Minimum spread to enter (0 = no minimum)
-    MAX_SPREAD: 0.50            // Maximum spread (too volatile)
+    MAX_SPREAD: 0.50,           // Maximum spread (too volatile)
+    MAX_PAIR_COST: 0.99         // Max pair cost (bestBidYES + bestBidNO)
 };
 
 export class Guardrails {
@@ -137,6 +138,24 @@ export class Guardrails {
     }
 
     /**
+     * Check pair cost from best bids
+     * @param {number|null} pairCost
+     */
+    checkPairCost(pairCost) {
+        if (pairCost === null || pairCost === undefined) {
+            return { check: 'PAIR_COST', passed: true, value: null, threshold: this.config.MAX_PAIR_COST, reason: null };
+        }
+        const passed = pairCost <= this.config.MAX_PAIR_COST;
+        return {
+            check: 'PAIR_COST',
+            passed,
+            value: pairCost,
+            threshold: this.config.MAX_PAIR_COST,
+            reason: passed ? null : `Pair cost ${pairCost.toFixed(3)} > ${this.config.MAX_PAIR_COST}`
+        };
+    }
+
+    /**
      * Run all guardrail checks
      * Returns overall decision and individual results
      */
@@ -150,7 +169,8 @@ export class Guardrails {
         stability,
         priceYes,
         priceNo,
-        foremanOrder = 'START'
+        foremanOrder = 'START',
+        pairCost = null
     }) {
         const results = {
             foreman: {
@@ -163,7 +183,8 @@ export class Guardrails {
             obi: this.checkOBI(obi, obiSide),
             flips: this.checkFlips(flipCount, shares),
             stability: this.checkStability(stability),
-            spread: this.checkSpread(priceYes, priceNo)
+            spread: this.checkSpread(priceYes, priceNo),
+            pairCost: this.checkPairCost(pairCost)
         };
 
         // Overall decision

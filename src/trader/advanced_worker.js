@@ -11,6 +11,8 @@ import { OBICalculator, updateOBIFromMarket } from '../data/obi_calculator.js';
 import { resolutionTracker } from '../data/resolution_tracker.js';
 import { Logger } from '../utils/logger.js';
 import { sleep } from '../utils.js';
+import { fetchOrderBook } from '../data/polymarket.js';
+import { ClobOrderbookStream } from '../data/clob_ws.js';
 
 const logger = new Logger('adv-worker');
 const ORDERS_FILE = "./orders_multi.json";
@@ -53,6 +55,19 @@ class AdvancedWorker {
         // Per-asset state
         this.assetState = {};  // { BTC: { state, tracker, obi, lock, ... }, ... }
         this.lastTelemetryMs = {};
+        this.bookCache = new Map();
+        this.clobWs = null;
+
+        const wsUrl = process.env.POLYMARKET_CLOB_WS_URL || "";
+        if (wsUrl) {
+            this.clobWs = new ClobOrderbookStream({ wsUrl });
+            this.clobWs.onUpdate(({ tokenId, bids, asks }) => {
+                this.bookCache.set(String(tokenId), {
+                    at: Date.now(),
+                    book: { bids, asks }
+                });
+            });
+        }
     }
 
     getRiskCaps(orders) {
@@ -113,6 +128,36 @@ class AdvancedWorker {
         const tokens = new Set(tokenIds.filter(Boolean));
         if (tokens.size === 0) return 0;
         return this.exchange.orders.filter((o) => o?.type === "GTC" && tokens.has(o.tokenId)).length;
+    }
+
+    async getOrderBookSnapshot(tokenId) {
+        if (!tokenId) return null;
+        if (this.clobWs) {
+            this.clobWs.subscribe(tokenId);
+        }
+        const cacheKey = String(tokenId);
+        const now = Date.now();
+        const cached = this.bookCache.get(cacheKey);
+        if (cached && now - cached.at < 5000) return cached.book;
+
+        try {
+            const book = await fetchOrderBook({ tokenId });
+            this.bookCache.set(cacheKey, { at: now, book });
+            return book;
+        } catch (err) {
+            return cached?.book || null;
+        }
+    }
+
+    getBestBidAsk(book) {
+        const bids = Array.isArray(book?.bids) ? book.bids : [];
+        const asks = Array.isArray(book?.asks) ? book.asks : [];
+        const bestBid = bids.length ? Number(bids[0]?.price) : null;
+        const bestAsk = asks.length ? Number(asks[0]?.price) : null;
+        return {
+            bestBid: Number.isFinite(bestBid) ? bestBid : null,
+            bestAsk: Number.isFinite(bestAsk) ? bestAsk : null
+        };
     }
 
     initAssetState(asset) {
@@ -184,8 +229,11 @@ class AdvancedWorker {
             state.position = { yesShares: 0, yesCost: 0, noShares: 0, noCost: 0 };
         }
 
-        // Get current prices
+        // Get current prices + orderbook
         let priceYes = 0.50, priceNo = 0.50;
+        let yesBook = null, noBook = null;
+        let yesBest = { bestBid: null, bestAsk: null };
+        let noBest = { bestBid: null, bestAsk: null };
         try {
             const yesToken = assetOrder.tokens?.up;
             const noToken = assetOrder.tokens?.down;
@@ -198,6 +246,13 @@ class AdvancedWorker {
                 ]);
                 priceYes = yesData?.price || 0.50;
                 priceNo = noData?.price || 0.50;
+
+                [yesBook, noBook] = await Promise.all([
+                    this.getOrderBookSnapshot(yesToken),
+                    this.getOrderBookSnapshot(noToken)
+                ]);
+                yesBest = this.getBestBidAsk(yesBook);
+                noBest = this.getBestBidAsk(noBook);
             }
         } catch (err) {
             logger.debug(`[${asset}] Price fetch error: ${err.message}`);
@@ -214,7 +269,10 @@ class AdvancedWorker {
         // State machine
         switch (state.state) {
             case STATES.ARMED:
-                await this.handleArmed(asset, state, window, leaderInfo);
+                await this.handleArmed(asset, state, window, leaderInfo, {
+                    yesBest,
+                    noBest
+                });
                 break;
 
             case STATES.ENTRY:
@@ -226,7 +284,7 @@ class AdvancedWorker {
                 break;
 
             case STATES.LOCKING:
-                await this.handleLocking(asset, state, priceYes, priceNo);
+                await this.handleLocking(asset, state, priceYes, priceNo, leaderInfo);
                 break;
 
             case STATES.LOCKED:
@@ -254,11 +312,13 @@ class AdvancedWorker {
             position: state.position,
             locked: state.lockDetector.locked,
             priceYes,
-            priceNo
+            priceNo,
+            yesBest,
+            noBest
         };
     }
 
-    async handleArmed(asset, state, window, leaderInfo) {
+    async handleArmed(asset, state, window, leaderInfo, { yesBest, noBest } = {}) {
         // Check all guardrails
         const check = this.guardrails.checkAll({
             elapsedSec: window.elapsed_sec,
@@ -270,7 +330,8 @@ class AdvancedWorker {
             stability: 0.7,  // TODO: Get from foreman
             priceYes: leaderInfo.priceYes,
             priceNo: leaderInfo.priceNo,
-            foremanOrder: 'START'
+            foremanOrder: 'START',
+            pairCost: (yesBest?.bestBid && noBest?.bestBid) ? (yesBest.bestBid + noBest.bestBid) : null
         });
 
         if (check.allowed) {
@@ -400,7 +461,7 @@ class AdvancedWorker {
         logger.info(`[${asset}] Ladder placed, moving to LOCKING`);
     }
 
-    async handleLocking(asset, state, priceYes, priceNo) {
+    async handleLocking(asset, state, priceYes, priceNo, leaderInfo) {
         // Check for dual profit lock
         const analysis = state.lockDetector.checkLock(state.position);
 
@@ -408,6 +469,31 @@ class AdvancedWorker {
             state.state = STATES.LOCKED;
             logger.info(`[${asset}] 🔒 LOCKED! YES:$${analysis.pnlIfYesWins.toFixed(2)} NO:$${analysis.pnlIfNoWins.toFixed(2)}`);
             return;
+        }
+
+        const totalShares = (state.position.yesShares || 0) + (state.position.noShares || 0);
+        if (totalShares > 0 && leaderInfo?.flipCount >= 3) {
+            state.state = STATES.RECOVERY;
+            logger.info(`[${asset}] Recovery triggered by flips (${leaderInfo.flipCount})`);
+            return;
+        }
+
+        if (state.position.yesShares > 0) {
+            const avgYes = state.position.yesShares > 0 ? state.position.yesCost / state.position.yesShares : null;
+            if (avgYes && priceYes > 0 && priceYes < avgYes * 0.9) {
+                state.state = STATES.RECOVERY;
+                logger.info(`[${asset}] Recovery triggered by YES reversal`);
+                return;
+            }
+        }
+
+        if (state.position.noShares > 0) {
+            const avgNo = state.position.noShares > 0 ? state.position.noCost / state.position.noShares : null;
+            if (avgNo && priceNo > 0 && priceNo < avgNo * 0.9) {
+                state.state = STATES.RECOVERY;
+                logger.info(`[${asset}] Recovery triggered by NO reversal`);
+                return;
+            }
         }
 
         // Check if needs recovery
@@ -425,6 +511,66 @@ class AdvancedWorker {
 
     async handleRecovery(asset, state, assetOrder, priceYes, priceNo, caps) {
         const analysis = state.lockDetector.analyzePosition(state.position);
+
+        // Aggressive lock sizing (if spread allows)
+        const winnerSide = analysis.recoverySide === 'YES' ? 'NO' : 'YES';
+        const winnerPrice = winnerSide === 'YES' ? priceYes : priceNo;
+        const loserPrice = winnerSide === 'YES' ? priceNo : priceYes;
+        const winnerPnl = winnerSide === 'YES' ? analysis.pnlIfYesWins : analysis.pnlIfNoWins;
+        const loserDef = analysis.recoverySide === 'YES' ? analysis.yesDeficit : analysis.noDeficit;
+
+        if (Number.isFinite(winnerPrice) && Number.isFinite(loserPrice)) {
+            const aggressive = state.lockDetector.calculateAggressiveLock({
+                winnerShares: winnerSide === 'YES' ? analysis.yesShares : analysis.noShares,
+                winnerPrice,
+                winnerPnl,
+                loserShares: analysis.recoverySide === 'YES' ? analysis.yesShares : analysis.noShares,
+                loserPrice,
+                loserDeficit: loserDef,
+                targetWinnerProfit: 0
+            });
+
+            if (!aggressive?.error) {
+                const buyWinner = Math.min(aggressive.buyWinner || 0, 5);
+                const buyLoser = Math.min(aggressive.buyLoser || 0, 5);
+
+                if (buyWinner > 0) {
+                    const tokenId = winnerSide === 'YES' ? assetOrder.tokens?.up : assetOrder.tokens?.down;
+                    if (tokenId && this.canPlaceOrder(state, winnerPrice + 0.02, buyWinner, caps, asset, "RECOVERY_WINNER")
+                        && this.canAddPairPosition(state, winnerSide, winnerPrice + 0.02, buyWinner, "IOC", asset, "RECOVERY_WINNER")) {
+                        try {
+                            await this.exchange.placeOrder({
+                                tokenId,
+                                side: 'BUY',
+                                price: winnerPrice + 0.02,
+                                size: buyWinner,
+                                type: 'IOC'
+                            });
+                        } catch {
+                            // ignore
+                        }
+                    }
+                }
+
+                if (buyLoser > 0) {
+                    const tokenId = analysis.recoverySide === 'YES' ? assetOrder.tokens?.up : assetOrder.tokens?.down;
+                    if (tokenId && this.canPlaceOrder(state, loserPrice + 0.02, buyLoser, caps, asset, "RECOVERY_LOSER")
+                        && this.canAddPairPosition(state, analysis.recoverySide, loserPrice + 0.02, buyLoser, "IOC", asset, "RECOVERY_LOSER")) {
+                        try {
+                            await this.exchange.placeOrder({
+                                tokenId,
+                                side: 'BUY',
+                                price: loserPrice + 0.02,
+                                size: buyLoser,
+                                type: 'IOC'
+                            });
+                        } catch {
+                            // ignore
+                        }
+                    }
+                }
+            }
+        }
 
         // Calculate recovery shares needed
         const recoverySide = analysis.recoverySide;
@@ -619,6 +765,7 @@ class AdvancedWorker {
                     const last = this.lastTelemetryMs[r.asset] || 0;
                     if (now - last < 10_000) continue;
                     this.lastTelemetryMs[r.asset] = now;
+                    const pairCost = (r.yesBest?.bestBid && r.noBest?.bestBid) ? (r.yesBest.bestBid + r.noBest.bestBid) : null;
                     logger.debug(
                         `[${r.asset}] tick`,
                         {
@@ -630,6 +777,7 @@ class AdvancedWorker {
                             obi: Number.isFinite(r.obi) ? Number(r.obi) : null,
                             price_yes: r.priceYes,
                             price_no: r.priceNo,
+                            pair_cost_best_bid: pairCost,
                             position: r.position,
                             locked: r.locked,
                             risk_caps: caps

@@ -8,9 +8,9 @@
         "noShares": 0,
         "noCost": 0
       },
-      "leader": "NO",
+      "leader": "YES",
       "flips": 0,
-      "obi": -0.17315079279846982,
+      "obi": 0.0943709983809054,
       "locked": false,
       "lockDetails": {
         "locked": false,
@@ -19,7 +19,7 @@
       }
     },
     "SOL": {
-      "state": "LOCKING",
+      "state": "ARMED",
       "position": {
         "yesShares": 0,
         "yesCost": 0,
@@ -28,7 +28,7 @@
       },
       "leader": "NO",
       "flips": 0,
-      "obi": 0.09432368922084212,
+      "obi": -0.8757552551062651,
       "locked": false,
       "lockDetails": {
         "locked": false,
@@ -46,7 +46,7 @@
       },
       "leader": "NO",
       "flips": 0,
-      "obi": -0.04215693391568829,
+      "obi": -0.993859108640559,
       "locked": false,
       "lockDetails": {
         "locked": false,
@@ -65,14 +65,14 @@
     "pnlIfNoWins": 0
   },
   "balance": 100,
-  "pendingOrders": 5,
+  "pendingOrders": 0,
   "window": {
-    "id": 1769834700,
-    "start": "2026-01-31T04:45:00.000Z",
-    "end": "2026-01-31T05:00:00.000Z",
-    "elapsed_sec": 764,
-    "remaining_sec": 135,
-    "progress": 0.8488888888888889
+    "id": 1769835600,
+    "start": "2026-01-31T05:00:00.000Z",
+    "end": "2026-01-31T05:15:00.000Z",
+    "elapsed_sec": 873,
+    "remaining_sec": 26,
+    "progress": 0.97
   },
   "stats": {
     "session": {
@@ -81,7 +81,7 @@
       "breakeven": 0,
       "totalPnl": 0,
       "tradesEntered": 0,
-      "startTime": "2026-01-31T04:54:58.318Z",
+      "startTime": "2026-01-31T05:14:05.353Z",
       "winRate": "N/A",
       "totalTrades": 0
     },
@@ -95,5 +95,5 @@
     },
     "recentTrades": []
   },
-  "lastUpdate": "2026-01-31T04:57:48.557Z"
+  "lastUpdate": "2026-01-31T05:14:46.532Z"
 }

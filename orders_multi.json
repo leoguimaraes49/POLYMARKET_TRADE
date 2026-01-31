@@ -1,62 +1,102 @@
 {
-  "timestamp": "2026-01-31T04:57:44.668Z",
+  "timestamp": "2026-01-31T05:14:34.025Z",
   "window": {
-    "id": 1769834700,
-    "start": "2026-01-31T04:45:00.000Z",
-    "end": "2026-01-31T05:00:00.000Z",
-    "elapsed_sec": 764,
-    "remaining_sec": 135,
-    "progress": 0.8488888888888889
+    "id": 1769835600,
+    "start": "2026-01-31T05:00:00.000Z",
+    "end": "2026-01-31T05:15:00.000Z",
+    "elapsed_sec": 873,
+    "remaining_sec": 26,
+    "progress": 0.97
   },
   "assets": {
     "BTC": {
       "asset": "BTC",
-      "slug": "btc-updown-15m-1769834700",
-      "question": "Bitcoin Up or Down - January 30, 11:45PM-12:00AM ET",
+      "slug": "btc-updown-15m-1769835600",
+      "question": "Bitcoin Up or Down - January 31, 12:00AM-12:15AM ET",
       "tokens": {
-        "up": "39184169759596872000922765704164385255523972657281416327623673253011926749223",
-        "down": "64499725599631990691143764196048865741472856063938325148739025182067711986371"
+        "up": "70945179990021997686034280560751496616724814445128564366380481584969606492143",
+        "down": "37692840517606494138559884833953964760863023109630052099024861909551170824746"
       },
-      "order": "HOLD",
+      "order": "STOP",
       "ready": true,
-      "ready_for_next": true,
-      "score": 0.53,
-      "regime": "STEADY",
-      "zScore": 7.97,
-      "hasBoost": true,
+      "ready_for_next": false,
+      "score": 0.348,
+      "rawScore": 0.29,
+      "windBoost": 1.2,
+      "regime": "FADING",
+      "zScore": 1.71,
+      "hasBoost": false,
       "consistency": {
-        "micro": 0.6923076923076923,
-        "meso": 0.6666666666666666,
+        "micro": 0.5357142857142857,
+        "meso": 0.6,
         "macro": 0.6470588235294118
       },
       "volatility": {
-        "vol30mLog": 0.00022042995276157416,
-        "vol24hLog": 0.003828952328768046,
+        "vol30mLog": 0.0002491088321668459,
+        "vol24hLog": 0.0037181686871389937,
         "squeeze": true
       },
-      "currentPrice": 83998.35,
+      "currentPrice": 84018.28,
       "components": {
-        "microT": 0.35,
-        "mesoT": 0.2,
+        "microT": 0.07,
+        "mesoT": 0.11,
         "macroT": 0.51,
-        "stability": 1
+        "stability": 0.62
       },
       "divergence": false
     },
     "SOL": {
       "asset": "SOL",
-      "slug": "sol-updown-15m-1769834700",
-      "question": "Solana Up or Down - January 30, 11:45PM-12:00AM ET",
+      "slug": "sol-updown-15m-1769835600",
+      "question": "Solana Up or Down - January 31, 12:00AM-12:15AM ET",
       "tokens": {
-        "up": "3097849605139472317089738360689689892990863172597277372898799454479290346606",
-        "down": "85367714709302911949863721080881402502979311057304325528198715080193869175341"
+        "up": "83232929889203565406357360829376518274736515980824934875103219945947184355676",
+        "down": "31033397723528373715807643374294112114237298537438897368009303838099337087422"
       },
       "order": "STOP",
       "ready": true,
       "ready_for_next": true,
-      "score": 0.22,
+      "score": 0.24,
+      "rawScore": 0.2,
+      "windBoost": 1.2,
       "regime": "STEADY",
-      "zScore": 5.02,
+      "zScore": 2.62,
+      "hasBoost": true,
+      "consistency": {
+        "micro": 0.5,
+        "meso": 0.6,
+        "macro": 0.6470588235294118
+      },
+      "volatility": {
+        "vol30mLog": 0.0005802040419388522,
+        "vol24hLog": 0.005898516458013872,
+        "squeeze": true
+      },
+      "currentPrice": 118.26,
+      "components": {
+        "microT": 0.14,
+        "mesoT": 0.04,
+        "macroT": 0.41,
+        "stability": 0.96
+      },
+      "divergence": true
+    },
+    "XRP": {
+      "asset": "XRP",
+      "slug": "xrp-updown-15m-1769835600",
+      "question": "XRP Up or Down - January 31, 12:00AM-12:15AM ET",
+      "tokens": {
+        "up": "25853565325388055116524602529456851914433226160975647547377717923905883598972",
+        "down": "46753652579155289994900487968869343475413345478489868816047937419479833018536"
+      },
+      "order": "START",
+      "ready": true,
+      "ready_for_next": true,
+      "score": 0.612,
+      "rawScore": 0.51,
+      "windBoost": 1.2,
+      "regime": "STEADY",
+      "zScore": 6.23,
       "hasBoost": true,
       "consistency": {
         "micro": 0.52,
@@ -64,48 +104,14 @@
         "macro": 0.5882352941176471
       },
       "volatility": {
-        "vol30mLog": 0.0004360313698045641,
-        "vol24hLog": 0.006681289172953864,
+        "vol30mLog": 0.0005634899324263494,
+        "vol24hLog": 0.006651913057512143,
         "squeeze": true
       },
-      "currentPrice": 118.46,
+      "currentPrice": 1.7334,
       "components": {
-        "microT": 0.21,
-        "mesoT": 0.12,
-        "macroT": 0.4,
-        "stability": 1
-      },
-      "divergence": true
-    },
-    "XRP": {
-      "asset": "XRP",
-      "slug": "xrp-updown-15m-1769834700",
-      "question": "XRP Up or Down - January 30, 11:45PM-12:00AM ET",
-      "tokens": {
-        "up": "22536909884593439594929297706033128512282438786930404265029423995089853653468",
-        "down": "81659063803167395360709856275384428240861274782296237334549230045299444568861"
-      },
-      "order": "START",
-      "ready": true,
-      "ready_for_next": true,
-      "score": 0.58,
-      "regime": "STEADY",
-      "zScore": 11.31,
-      "hasBoost": true,
-      "consistency": {
-        "micro": 0.5925925925925926,
-        "meso": 0.6,
-        "macro": 0.5882352941176471
-      },
-      "volatility": {
-        "vol30mLog": 0.0004812188114338299,
-        "vol24hLog": 0.00720429239566327,
-        "squeeze": true
-      },
-      "currentPrice": 1.737,
-      "components": {
-        "microT": 0.49,
-        "mesoT": 0.16,
+        "microT": 0.3,
+        "mesoT": 0.2,
         "macroT": 0.54,
         "stability": 1
       },
@@ -129,20 +135,20 @@
     }
   },
   "regimes": {
-    "BTC": "STEADY",
+    "BTC": "FADING",
     "SOL": "STEADY",
     "XRP": "STEADY"
   },
   "scores": {
     "BTC": {
       "asset": "BTC",
-      "score": 0.53,
-      "order": "HOLD",
+      "score": 0.29,
+      "order": "STOP",
       "components": {
-        "microT": 0.35,
-        "mesoT": 0.2,
+        "microT": 0.07,
+        "mesoT": 0.11,
         "macroT": 0.51,
-        "stability": 1
+        "stability": 0.62
       },
       "directions": {
         "micro": -1,
@@ -153,13 +159,13 @@
     },
     "SOL": {
       "asset": "SOL",
-      "score": 0.22,
+      "score": 0.2,
       "order": "STOP",
       "components": {
-        "microT": 0.21,
-        "mesoT": 0.12,
-        "macroT": 0.4,
-        "stability": 1
+        "microT": 0.14,
+        "mesoT": 0.04,
+        "macroT": 0.41,
+        "stability": 0.96
       },
       "directions": {
         "micro": -1,
@@ -170,11 +176,11 @@
     },
     "XRP": {
       "asset": "XRP",
-      "score": 0.58,
-      "order": "START",
+      "score": 0.51,
+      "order": "HOLD",
       "components": {
-        "microT": 0.49,
-        "mesoT": 0.16,
+        "microT": 0.3,
+        "mesoT": 0.2,
         "macroT": 0.54,
         "stability": 1
       },

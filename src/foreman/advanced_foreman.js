@@ -59,6 +59,9 @@ async function run() {
             const window = getWindowInfo();
             const assetsData = {};
             let activeCount = 0;
+            const scoreAssets = Object.keys(scores);
+            const windSum = scoreAssets.reduce((sum, a) => sum + (scores[a]?.directions?.micro || 0), 0);
+            const windFactor = scoreAssets.length ? Math.abs(windSum) / scoreAssets.length : 0;
 
             for (const asset of Object.keys(SUPPORTED_ASSETS)) {
                 const market = await resolveMarket(asset);
@@ -72,12 +75,17 @@ async function run() {
                 const regime = regimeTracker.getRegime(asset);
                 const binData = binanceData[asset];
 
+                const dir = score?.directions?.micro || 0;
+                const align = windSum === 0 ? true : Math.sign(dir) === Math.sign(windSum);
+                const windBoost = align ? (1.0 + windFactor * 0.2) : (1.0 - windFactor * 0.3);
+                const adjustedScore = score ? Math.max(0, Math.min(1, score.score * windBoost)) : 0;
+
                 // Determinar ordem baseado em score + regime
                 let order = 'STOP';
-                if (score && score.order === 'START' && regime !== REGIMES.CHOPPY) {
+                if (score && adjustedScore >= 0.55 && regime !== REGIMES.CHOPPY) {
                     order = 'START';
                     activeCount++;
-                } else if (score && score.order === 'HOLD') {
+                } else if (score && adjustedScore >= 0.35) {
                     order = 'HOLD';
                 }
 
@@ -99,7 +107,9 @@ async function run() {
                     ready: !!market.tokens?.up,
                     ready_for_next: regime === REGIMES.STEADY && window.remainingSec <= 180,
                     // Novos dados
-                    score: score?.score || 0,
+                    score: adjustedScore,
+                    rawScore: score?.score || 0,
+                    windBoost,
                     regime,
                     zScore: binData?.zScore || 0,
                     hasBoost: binData?.hasBoost || false,
